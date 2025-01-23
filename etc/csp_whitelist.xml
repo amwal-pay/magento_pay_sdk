@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp/etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="script-src">
+            <values>
+                <value id="amwal-prod" type="host">https://checkout.amwalpg.com</value>
+                <value id="amwal-uat" type="host">https://test.amwalpg.com:7443</value>
+                <value id="amwal-sit" type="host">https://test.amwalpg.com:19443</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>

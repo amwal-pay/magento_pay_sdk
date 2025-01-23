@@ -1,0 +1,27 @@
+{
+    "name": "amwal/magento-payment",
+    "version": "1.0.0",
+    "description": "AmwalPay payment for for Magento2 e-commerce.",
+    "keywords": [
+        "amwal",
+        "Amwal",
+        "AmwalPay",
+        "AmwalPay payment"
+    ],
+    "homepage": "https://www.amwal-pay.com/",
+    "authors": [
+        {
+            "name": "AmwalPay Plugin Team"
+        }
+    ],
+    "type": "magento2-module",
+    "license": [
+        "GPL-3.0-only"
+    ],
+    "autoload": {
+        "files": ["registration.php"],
+        "psr-4": {
+            "Amwal\\Pay\\": ""
+        }
+    }
+}

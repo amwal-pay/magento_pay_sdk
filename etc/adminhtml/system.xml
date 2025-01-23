@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="payment">
+            <group id="amwal_pay" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="0" translate="label">
+                <label>Amwal Pay</label>
+                <field id="active" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label" type="select">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="title" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="20" translate="label" type="text">
+                    <label>Title</label>
+                    <validate>required-entry</validate>
+                </field>  
+                <field id="environment" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Environment</label>
+                    <comment>Select the environment for Amwal PayForm Gateway.</comment>
+                    <source_model>Amwal\Pay\Model\Config\Source\Environment</source_model>
+                </field>
+                <field id="merchant_id" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="50" translate="label" type="text">
+                    <label>Merchant Id</label>
+                    <validate>required-entry</validate>
+                </field> 
+                <field id="terminal_id" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="60" translate="label" type="text">
+                    <label>Terminal Id</label>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="secret_key" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="60" translate="label" type="text">
+                    <label>Secret Key</label>
+                    <validate>required-entry</validate>
+                </field>      
+                <field id="complete_paid_order" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="60" translate="label" type="select">
+                    <label>Complete Order After Payment</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>set order status completed after payment instead of processing</comment>
+                </field>
+                <field id="sort_order" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="90" translate="label" type="text">
+                    <label>Sort Order</label>
+                </field>
+                <field id="allowspecific" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="110" translate="label" type="allowspecific">
+                    <label>Payment from Applicable Countries</label>
+                    <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
+                </field>
+                <field id="specificcountry" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="120" translate="label" type="multiselect">
+                    <label>Payment from Applicable Countries</label>
+                    <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                    <can_be_empty>1</can_be_empty>
+                </field>
+                 <field id="debug" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="120" translate="label" type="select">
+                    <label>Debug Log</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Log file will be saved in magento_directory/var/log</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
