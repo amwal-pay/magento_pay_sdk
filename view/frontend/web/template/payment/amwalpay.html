@@ -3,13 +3,13 @@
         <input type="radio" name="payment[method]" class="radio"
             data-bind="attr: {'id': getCode()}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()" />
         <label data-bind="attr: {'for': getCode()}" class="label">
-            
-            <span data-bind="text: getTitle()"></span></label>
-            <img id ="payment-icon" class="payment-icon" data-bind="
+            <span data-bind="text: getTitle()"></span>
+            <img id="payment-icon" class="payment-icon" data-bind="
                 attr: {
                     src: require.toUrl('Amwal_Pay/images/amwalpay.svg'),
                     alt: getTitle()
                 }" />
+        </label>
     </div>
     <div class="payment-method-content">
         <!-- ko foreach: getRegion('messages') -->
@@ -43,7 +43,8 @@
 </div>
 <style>
     .payment-method-title {
-        overflow: hidden; /* Ensures the floats are contained within the parent */
+        overflow: hidden;
+        /* Ensures the floats are contained within the parent */
     }
 
     #payment-icon {

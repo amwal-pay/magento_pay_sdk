@@ -9,28 +9,40 @@ class Environment implements ArrayInterface
     /**
      * Provide available options as a value-label pair
      *
-     * @return array
+     * @return array An array of options with value-label pairs
      */
     public function toOptionArray()
     {
-        return [
-            ['value' => 'prod', 'label' => __('Production')],
-            ['value' => 'sit', 'label' => __('SIT')],
-            ['value' => 'uat', 'label' => __('UAT')],
-        ];
+        try {
+            return [
+                ['value' => 'prod', 'label' => __('Production')],
+                ['value' => 'sit', 'label' => __('SIT')],
+                ['value' => 'uat', 'label' => __('UAT')],
+            ];
+        } catch (\Exception $e) {
+            // Handle any exceptions that may occur
+            error_log('Error retrieving environment options: ' . $e->getMessage());
+            return []; // Return an empty array in case of an error
+        }
     }
 
     /**
      * Provide available options as a key-value pair
      *
-     * @return array
+     * @return array An associative array of options
      */
     public function toArray()
     {
-        return [
-            'prod' => __('Production'),
-            'sit'  => __('SIT'),
-            'uat'  => __('UAT'),
-        ];
+        try {
+            return [
+                'prod' => __('Production'),
+                'sit'  => __('SIT'),
+                'uat'  => __('UAT'),
+            ];
+        } catch (\Exception $e) {
+            // Handle any exceptions that may occur
+            error_log('Error retrieving environment options as array: ' . $e->getMessage());
+            return []; // Return an empty array in case of an error
+        }
     }
 }

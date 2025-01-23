@@ -9,22 +9,18 @@ use Magento\Framework\UrlInterface;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
-
 class ConfigProvider implements ConfigProviderInterface
 {
     /**
      * @var string[]
      */
-    protected $method;
-    protected $scopeConfig;
-    protected $storeManager;
+    protected $method; // Payment method code
+    protected $scopeConfig; // Scope configuration interface
+    protected $storeManager; // Store manager interface
 
     /**
-     * @param \Magento\Checkout\Model\Session $checkoutSession
-     * @param Session                         $customerSession
-     * @param Url                             $urlBuilder
-     */
-    /**
+     * Constructor to initialize dependencies
+     *
      * @param ScopeConfig           $scopeConfig
      * @param StoreManagerInterface $storeManager
      */
@@ -33,27 +29,37 @@ class ConfigProvider implements ConfigProviderInterface
         $this->scopeConfig = $scopeConfig;
         $this->storeManager = $storeManager;
     }
+
     /**
+     * Retrieve configuration data for the payment method
+     *
      * @return array
      * @throws NoSuchEntityException
      */
     public function getConfig()
     {
-        return [
-            'payment' => [
-                AmwalPay::CODE => [
-                    'environment' =>  $this->getConfigData(AmwalPay::CODE, 'environment'),
-                    'callback' =>  $this->storeManager->getStore()->getBaseUrl().'amwal/checkout/callback'
+        try {
+            return [
+                'payment' => [
+                    AmwalPay::CODE => [
+                        'environment' => $this->getConfigData(AmwalPay::CODE, 'environment'),
+                        'callback' => $this->storeManager->getStore()->getBaseUrl() . 'amwal/checkout/callback'
+                    ],
                 ],
-            ],
-        ];
+            ];
+        } catch (NoSuchEntityException $e) {
+            // Handle the exception if the store or configuration is not found
+            error_log('Error retrieving payment configuration: ' . $e->getMessage());
+            return []; // Return an empty array in case of an error
+        }
     }
 
     /**
-     * @param $paymentCode
-     * @param $field
+     * Retrieve specific configuration data for the payment method
      *
-     * @return mixed
+     * @param string $paymentCode The payment method code
+     * @param string $field The specific field to retrieve
+     * @return mixed The configuration value
      */
     private function getConfigData($paymentCode, $field)
     {

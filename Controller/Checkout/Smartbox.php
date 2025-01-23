@@ -13,6 +13,7 @@ use Magento\Sales\Model\ResourceModel\Order\Status as StatusResource;
 use Magento\Sales\Model\ResourceModel\Order\StatusFactory as StatusResourceFactory;
 use Magento\Framework\Locale\ResolverInterface;
 use Amwal\Pay\Helper\AmwalPay;
+
 class Smartbox extends \Magento\Framework\App\Action\Action implements CsrfAwareActionInterface
 {
     protected $statusFactory;
@@ -24,6 +25,20 @@ class Smartbox extends \Magento\Framework\App\Action\Action implements CsrfAware
     protected $checkoutSession;
     protected $localeResolver;
     protected $helper;
+
+    /**
+     * Constructor to initialize dependencies
+     *
+     * @param \Magento\Framework\App\Action\Context $context
+     * @param \Magento\Checkout\Model\Session $checkoutSession
+     * @param \Magento\Sales\Model\Order $order
+     * @param \Magento\Framework\App\ResourceConnection $resource
+     * @param \Amwal\Pay\Model\AmwalPay $amwal
+     * @param StatusFactory $statusFactory
+     * @param StatusResourceFactory $statusResourceFactory
+     * @param ResolverInterface $localeResolver
+     * @param AmwalPay $helper
+     */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Checkout\Model\Session $checkoutSession,
@@ -46,24 +61,45 @@ class Smartbox extends \Magento\Framework\App\Action\Action implements CsrfAware
         $this->localeResolver = $localeResolver;
         $this->helper = $helper;
     }
+
+    /**
+     * Create a CSRF validation exception if needed
+     *
+     * @param RequestInterface $request
+     * @return InvalidRequestException|null
+     */
     public function createCsrfValidationException(RequestInterface $request): ?InvalidRequestException
     {
-        return null;
+        return null; // No CSRF validation needed
     }
 
+    /**
+     * Validate the request for CSRF
+     *
+     * @param RequestInterface $request
+     * @return bool|null
+     */
     public function validateForCsrf(RequestInterface $request): ?bool
     {
-        return true;
+        return true; // CSRF validation is always true
     }
+
+    /**
+     * Execute the payment process
+     *
+     * @return \Magento\Framework\Controller\Result\Json
+     */
     public function execute()
     {
-        // echo "ss";exit;
         $this->response = $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_JSON);
         $this->response->setHttpResponseCode(200);
         $order_id = $this->checkoutSession->getLastOrderId();
+
         try {
+            // Load the order using the order ID
             $order = $this->order->load($order_id);
             if ($order) {
+                // Get locale and other necessary data
                 $fullLocale = $this->localeResolver->getLocale();
                 $locale = substr($fullLocale, 0, 2);
                 $datetime = date('YmdHis');
@@ -73,6 +109,8 @@ class Smartbox extends \Magento\Framework\App\Action\Action implements CsrfAware
                 $debug = $this->amwal->getConfigData('debug');
                 $amount = $order->getBaseTotalDue();
                 $merchantReference = $order->getIncrementId() . '_' . date("ymds");
+
+                // Generate secure hash
                 $secret_key = $this->helper->generateString(
                     $amount,
                     512,
@@ -82,6 +120,8 @@ class Smartbox extends \Magento\Framework\App\Action\Action implements CsrfAware
                     $hmac_key,
                     $datetime
                 );
+
+                // Prepare data for the payment request
                 $data = (object) [
                     'AmountTrxn' => "$amount",
                     'MerchantReference' => "$merchantReference",
@@ -95,27 +135,34 @@ class Smartbox extends \Magento\Framework\App\Action\Action implements CsrfAware
                     'RequestSource' => 'Checkout_Magento',
                     'SessionToken' => '',
                 ];
+
+                // Log the payment request
                 $this->helper->addLogs($debug, AMWAL_DEBUG_FILE, 'Payment Request: ', print_r($data, 1));
 
+                // Update order status to pending payment
                 $order->setState(\Magento\Sales\Model\Order::STATE_PENDING_PAYMENT)
                     ->setStatus(\Magento\Sales\Model\Order::STATE_PENDING_PAYMENT)
                     ->addStatusHistoryComment(__("Order Created: Awaiting payment"))
                     ->save();
 
+                // Set response data
                 $this->response->setData([
                     'success' => true,
                     'jsonData' => $data,
                 ]);
+            } else {
+                // Handle case where order is not found
+                throw new \Exception(__('Order not found.'));
             }
 
         } catch (\Exception $e) {
+            // Handle exceptions and set error response
             $this->response->setData([
                 'success' => false,
-                'detail' => $e->getMessage(),
-
+                'detail' => __('An error occurred: ') . $e->getMessage(),
             ]);
         }
 
-        return $this->response;
+        return $this->response; // Return the JSON response
     }
 }
