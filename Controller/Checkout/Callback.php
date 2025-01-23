@@ -81,7 +81,7 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
 		$order = $this->orderFactory->create()->loadByIncrementId($orderId);
 		
 		if (empty($order->getId())) {
-			$this->redirectWithError('Sorry, you are accessing wrong information');
+			$this->redirectWithError(__('Sorry, you are accessing wrong information'));
 		}
 
 		$storeCode = $order->getStore()->getCode();
@@ -110,19 +110,18 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
 		if ($secureHashValue == $params['secureHashValue']) {
 			$isPaymentApproved = true;
 		}
-		// echo "<pre>";print_r($isPaymentApproved);exit;
 
 		$this->helper->addLogs($this->amwal->getConfigData("debug"), AMWAL_DEBUG_FILE, 'Payment', $isPaymentApproved ? 'Approved' : 'Canceled');
 		if ($isPaymentApproved) {
 
 			$response_url = $baseUrl . 'checkout/onepage/success';
-			$this->markOrderAsPaid($order, $orderId, $params['transactionId'], 'Payment successful');
+			$this->markOrderAsPaid($order, $orderId, $params['transactionId'], __('Payment successful'));
 			$response->setUrl($response_url);
 			return $response;
 
 		} else {
 
-			$error = 'Sorry, Your order has been failed.';
+			$error = __('Sorry, Your order has been failed.');
 			$msg = 'Order #' . $orderId . ' ' . $error;
 			$this->cancelOrder($order, $msg);
 			$this->redirectWithError($msg);
@@ -138,7 +137,7 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
 	 */
 	public function markOrderAsPaid($order, $orderId, $transId, $info = null)
 	{
-		$msg = 'Order #' . $orderId . ' ' . $info;
+		$msg = __('Order #'). $orderId . ' ' . $info;
 		$this->messageManager->addSuccess($msg);
 		$complete_paid_order = $this->amwal->getConfigData("complete_paid_order");
 		if ($complete_paid_order) {
@@ -180,10 +179,10 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
 				$transaction = $this->transaction->addObject($invoice)->addObject($invoice->getOrder());
 				$transaction->save();
 			} else {
-				$order->addStatusHistoryComment("AmwalPay: Can not create the Magento invoice without products.");
+				$order->addStatusHistoryComment(__("AmwalPay: Can not create the Magento invoice without products."));
 			}
 		} else {
-			$order->addStatusHistoryComment("AmwalPay: Can not create the Magento invoice.");
+			$order->addStatusHistoryComment(__("AmwalPay: Can not create the Magento invoice."));
 		}
 	}
 
@@ -216,7 +215,7 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
 			$this->redirectWithError($error);
 
 		} else {
-			$this->redirectWithError('Error, There is something went wong with the qoute!');
+			$this->redirectWithError(__('Error, There is something went wong with the qoute!'));
 		}
 	}
 

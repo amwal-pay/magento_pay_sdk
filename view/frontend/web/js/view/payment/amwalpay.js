@@ -5,8 +5,6 @@ define([
     'Magento_Checkout/js/model/quote'
 ], function ($, Component, rendererList, quote) {
     'use strict';
-
-    // Register the custom payment method
     rendererList.push(
         {
             type: 'amwal_pay',
