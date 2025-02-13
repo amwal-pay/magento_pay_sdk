@@ -37,33 +37,3 @@ php bin/magento cache:flush
 ## Checkout page 
 Amwal Pay payment method will be shown for the end-user to select and start his payment process. 
 <a href="https://imgbox.com/qFldcGEF" target="_blank"><img src="https://thumbs2.imgbox.com/03/b4/qFldcGEF_t.png" alt="image host"/></a>
-
----
-# Uploading to Composer
-
-To make your module accessible via Packagist, follow these steps:
-
-## 1. Sign Up for Packagist
-
-- Visit [Packagist](https://packagist.org/) and log in or create an account if you haven't already.
-
-## 2. Submit Your Package
-
-- Go to the [Submit](https://packagist.org/packages/submit) page on Packagist.
-- Enter your repository URL: `https://github.com/amwal-pay/magento_pay_sdk`.
-- Ensure your GitHub repository is **public** so Packagist can access it.
-
-## 3. Auto-update on Packagist
-
-To keep your package up to date, link your GitHub repository with Packagist:
-
-1. Navigate to your repository’s **Settings** on GitHub.
-2. Go to **Webhooks** and click **Add webhook**.
-3. Set the **Payload URL** to `https://packagist.org/api/github`.
-4. Choose `application/json` as the content type.
-5. Select **Just the push event**.
-6. Click **Add webhook** to save the changes.
-
-Once configured, your package will automatically update whenever you push new changes to the repository.
-
----
