@@ -3,7 +3,7 @@
 ## Installation
 1. Install the AmwalPay Payment Magento2 module via [amwal-pay/magento-payment](https://packagist.org/packages/amwal-pay/magento-payment) composer.
 ```bash
-composer require amwal-pay/magento-payment
+composer require amwal-pay/magento-payment:dev-main
 ```
 
 2. In the command line, run the below Magento commands to enable AmwalPay Payment Gateway module.
