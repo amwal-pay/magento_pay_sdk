@@ -46,23 +46,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get latest version and increment
+      - name: Generate version number
         id: get_version
         run: |
-          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "1.0.0")
-          echo "Latest tag: $LATEST_TAG"
-
-          # Extract major, minor, and patch versions
-          MAJOR=$(echo $LATEST_TAG | cut -d. -f1)
-          MINOR=$(echo $LATEST_TAG | cut -d. -f2)
-          PATCH=$(echo $LATEST_TAG | cut -d. -f3)
-
-          # Increment patch version
-          NEW_VERSION="$MAJOR.$MINOR.$(($PATCH + 1))"
-          echo "New version: $NEW_VERSION"
-
-          # Save version as environment variable
-          echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          VERSION=$(date +'%Y.%m.%d-%H%M%S')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Create and push tag
         run: |
