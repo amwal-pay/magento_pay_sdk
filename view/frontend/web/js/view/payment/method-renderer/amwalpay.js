@@ -69,6 +69,7 @@ define(
             },
             callSmartBox: function (data) {
                 var callback = window.checkoutConfig.payment[this.getCode()].callback;
+                var base_url = window.checkoutConfig.payment[this.getCode()].base_url;
                 SmartBox.Checkout.configure = {
                     ...data,
     
@@ -83,7 +84,7 @@ define(
                     },
     
                     cancelCallback: function () {
-                       
+                       window.location = base_url;
                     },
                 };
     
