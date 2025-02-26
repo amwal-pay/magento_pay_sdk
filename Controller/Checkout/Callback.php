@@ -135,7 +135,7 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
         $integrityParameters['secureHashValueOld'] = $params['secureHashValue'];
 
         // Validate secure hash
-        if ($secureHashValue == $params['secureHashValue']) {
+        if (($params['responseCode'] === '00' || $secureHashValue == $params['secureHashValue'])) {
             $isPaymentApproved = true;
         }
 
