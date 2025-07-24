@@ -126,16 +126,14 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
             "transactionTime" => $params['transactionTime']
         ];
 
-        // Log the callback response
-        $this->helper->addLogs($this->amwal->getConfigData("debug"), AMWAL_DEBUG_FILE, 'Callback Response: ', print_r($integrityParameters, 1));
-        
         // Generate secure hash value
         $secureHashValue = $this->helper->generateStringForFilter($integrityParameters, $this->amwal->getConfigData("secret_key"));
         $integrityParameters['secureHashValue'] = $secureHashValue;
         $integrityParameters['secureHashValueOld'] = $params['secureHashValue'];
-
+        // Log the callback response
+        $this->helper->addLogs($this->amwal->getConfigData("debug"), AMWAL_DEBUG_FILE, 'Callback Response: ', print_r($integrityParameters, 1));
         // Validate secure hash
-        if (($params['responseCode'] === '00' || $secureHashValue == $params['secureHashValue'])) {
+        if (($params['responseCode'] === '00' && $secureHashValue == $params['secureHashValue'])) {
             $isPaymentApproved = true;
         }
 
