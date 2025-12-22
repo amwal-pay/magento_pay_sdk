@@ -25,16 +25,34 @@
                     <label>Terminal Id</label>
                     <validate>required-entry</validate>
                 </field>
-                <field id="secret_key" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="60" translate="label" type="text">
+                <field id="secret_key" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="70" translate="label" type="text">
                     <label>Secret Key</label>
                     <validate>required-entry</validate>
-                </field>      
-                <field id="complete_paid_order" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="60" translate="label" type="select">
+                </field>
+                <field id="payment_view" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Payment Page View</label>
+                    <comment>Select the preferred payment view.</comment>
+                    <source_model>Amwal\Pay\Model\Config\Source\PaymentView</source_model>
+                </field>
+                <field id="contact_info_type" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Contact Info Type</label>
+                    <comment>Select the preferred contact info type.</comment>
+                    <source_model>Amwal\Pay\Model\Config\Source\ContactInfoType</source_model>
+                </field>
+                <field id="has_items" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="90" translate="label" type="select">
+                    <label>Show Product Details on Amwal's Checkout</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="apple_cert" translate="label" type="textarea" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Apple Pay Certificate</label>
+                    <backend_model>Amwal\Pay\Model\Config\Backend\AppleCert</backend_model>
+                </field>
+                <field id="complete_paid_order" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="90" translate="label" type="select">
                     <label>Complete Order After Payment</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>set order status completed after payment instead of processing</comment>
                 </field>
-                <field id="sort_order" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="90" translate="label" type="text">
+                <field id="sort_order" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="100" translate="label" type="text">
                     <label>Sort Order</label>
                 </field>
                 <field id="allowspecific" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="110" translate="label" type="allowspecific">
@@ -46,7 +64,7 @@
                     <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
                     <can_be_empty>1</can_be_empty>
                 </field>
-                 <field id="debug" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="120" translate="label" type="select">
+                 <field id="debug" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="130" translate="label" type="select">
                     <label>Debug Log</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>Log file will be saved in magento_directory/var/log</comment>

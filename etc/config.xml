@@ -6,6 +6,9 @@
                 <active>0</active>
                 <title>Amwal Pay</title>
                 <environment>uat</environment>
+                <payment_view>1</payment_view>
+                <contact_info_type>1</contact_info_type>
+                <has_items>1</has_items>
                 <allowspecific>0</allowspecific>
                 <debug>1</debug>
                 <model>Amwal\Pay\Model\AmwalPay</model>

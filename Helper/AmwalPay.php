@@ -6,12 +6,65 @@ use Magento\Framework\App\Helper\AbstractHelper;
 
 class AmwalPay extends AbstractHelper
 {
+    public static function HttpRequest($apiPath, $data = array())
+    {
+        try {
+            $payload = json_encode($data);
+            $ch = curl_init($apiPath);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/json',
+                'User-Agent: ' . self::sanitizeVar('HTTP_USER_AGENT', 'SERVER')
+            ));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+            $response = curl_exec($ch);
+            if (curl_errno($ch)) {
+                throw new \Exception('cURL error: ' . curl_error($ch));
+            }
+            curl_close($ch);
+            return json_decode($response, false);
+        } catch (\Exception $e) {
+            error_log('HttpRequest Error: ' . $e->getMessage());
+            return '';
+        }
+    }
+
     /**
-     * Encrypts the input string using SHA-256 with a given hex key.
-     *
-     * @param string $input The input string to be hashed.
-     * @param string $hexKey The hex key used for hashing.
-     * @return string The resulting SHA-256 hash.
+     * Returns the appropriate SmartBox and Webhook URL based on the environment.
+     */
+    public static function getWebhookUrl($env)
+    {
+        if ($env == "prod") {
+            return 'https://webhook.amwalpg.com/';
+        } else if ($env == "uat") {
+            return  'https://test.amwalpg.com:14443/';
+        } else if ($env == "sit") {
+            return  'https://test.amwalpg.com:24443/';
+        }
+    }
+    /**
+     * Generates a secure hash for transaction validation.
+     */
+    public static function generateString(
+        $amount,
+        $currencyId,
+        $merchantId,
+        $merchantReference,
+        $terminalId,
+        $hmacKey,
+        $trxDateTime,
+        $sessionToken
+    ) {
+
+        $string = "Amount={$amount}&CurrencyId={$currencyId}&MerchantId={$merchantId}&MerchantReference={$merchantReference}&RequestDateTime={$trxDateTime}&SessionToken={$sessionToken}&TerminalId={$terminalId}";
+
+        $sign = self::encryptWithSHA256($string, $hmacKey);
+        return strtoupper($sign);
+    }
+    /**
+     * Encrypts a given string using SHA-256 HMAC.
      */
     public static function encryptWithSHA256($input, $hexKey)
     {
@@ -21,85 +74,45 @@ class AmwalPay extends AbstractHelper
         $hash = hash_hmac('sha256', $input, $binaryKey);
         return $hash;
     }
-
-    /**
-     * Generates a signed string for payment request.
-     *
-     * @param float $amount The amount for the transaction.
-     * @param int $currencyId The currency ID.
-     * @param string $merchantId The merchant ID.
-     * @param string $merchantReference The merchant reference.
-     * @param string $terminalId The terminal ID.
-     * @param string $hmacKey The HMAC key for signing.
-     * @param string $trxDateTime The transaction date and time.
-     * @return string The generated signed string in uppercase.
-     */
-    public function generateString(
-        $amount,
-        $currencyId,
-        $merchantId,
-        $merchantReference,
-        $terminalId,
-        $hmacKey,
-        $trxDateTime
-    ): string {
-        // Create the string to be signed
-        $string = "Amount={$amount}&CurrencyId={$currencyId}&MerchantId={$merchantId}&MerchantReference={$merchantReference}&RequestDateTime={$trxDateTime}&SessionToken=&TerminalId={$terminalId}";
-
-        // Generate SIGN
-        $sign = self::encryptWithSHA256($string, $hmacKey);
-        return strtoupper($sign);
-    }
-
     /**
      * Generates a signed string for filtering data.
      *
-     * @param array $data The data to be signed.
-     * @param string $hmacKey The HMAC key for signing.
-     * @return string The generated signed string in uppercase.
      */
-    public function generateStringForFilter(
+    public static function generateStringForFilter(
         $data,
         $hmacKey
+
     ) {
-        // Convert data array to string key-value pairs
+        // Convert data array to string key value with and sign
         $string = '';
         foreach ($data as $key => $value) {
-            // Sanitize the value to avoid "null" or "undefined" strings
             $string .= $key . '=' . ($value === "null" || $value === "undefined" ? '' : $value) . '&';
         }
-        $string = rtrim($string, '&'); // Remove trailing '&'
-
+        $string = rtrim($string, '&');
         // Generate SIGN
         $sign = self::encryptWithSHA256($string, $hmacKey);
         return strtoupper($sign);
     }
-
+    public static function sanitizeVar($name, $global = 'GET')
+    {
+        if (isset($GLOBALS['_' . $global][$name])) {
+            if (is_array($GLOBALS['_' . $global][$name])) {
+                return $GLOBALS['_' . $global][$name];
+            }
+            return htmlspecialchars($GLOBALS['_' . $global][$name], ENT_QUOTES);
+        }
+        return null;
+    }
     /**
      * Adds logs to a specified file.
      *
-     * @param string $debug Debug flag to enable or disable logging.
-     * @param string $file The log file path.
-     * @param string $note A note to log.
-     * @param mixed $data Additional data to log (optional).
      */
     public static function addLogs($debug, $file, $note, $data = false)
     {
-        try {
-            if (is_bool($data)) {
-                // Log a simple note
-                if ('1' === $debug) {
-                    error_log(PHP_EOL . gmdate('d.m.Y h:i:s') . ' - ' . $note, 3, $file);
-                }
-            } else {
-                // Log note with additional data
-                if ('1' === $debug) {
-                    error_log(PHP_EOL . gmdate('d.m.Y h:i:s') . ' - ' . $note . ' -- ' . json_encode($data), 3, $file);
-                }
-            }
-        } catch (\Exception $e) {
-            // Handle any exceptions that occur during logging
-            error_log(PHP_EOL . gmdate('d.m.Y h:i:s') . ' - Error logging: ' . $e->getMessage(), 3, $file);
+        if (is_bool($data)) {
+            ('1' === $debug) ? error_log(PHP_EOL . gmdate('d.m.Y h:i:s') . ' - ' . $note, 3, $file) : false;
+        } else {
+            ('1' === $debug) ? error_log(PHP_EOL . gmdate('d.m.Y h:i:s') . ' - ' . $note . ' -- ' . json_encode($data), 3, $file) : false;
         }
     }
 }

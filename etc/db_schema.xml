@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+      <table name="amwalpay_cards_token" resource="default" engine="innodb" comment="AmwalPay Cards Token">
+        <column xsi:type="bigint" name="id"  unsigned="true" identity="true" comment=""/>
+        <column xsi:type="int" name="user_id" unsigned="true" nullable="false" comment="User ID"/>
+        <column xsi:type="varchar" name="token" length="255" nullable="false" comment="Token"/>
+        <column xsi:type="varchar" name="merchant_id" length="255" nullable="false" comment="Merchant Id"/>
+        <column xsi:type="varchar" name="environment" length="255" nullable="true" comment="Environment"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+    </table>
+</schema>
