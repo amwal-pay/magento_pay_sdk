@@ -145,6 +145,7 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
         $secureHashValue = $this->helper->generateStringForFilter($integrityParameters, $this->amwal->getConfigData("secret_key"));
         $integrityParameters['secureHashValue'] = $secureHashValue;
         $integrityParameters['secureHashValueOld'] = $params['secureHashValue'];
+<<<<<<< HEAD
 
         $info = 'Old Hash -- ' . $params['secureHashValue'] . '  New Hash -- ' . $secureHashValue;
         $this->helper->addLogs($this->amwal->getConfigData("debug"), AMWAL_DEBUG_FILE, $info);
@@ -153,6 +154,13 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
         if ($secureHashValue != $params['secureHashValue']) {
             $this->redirectWithError(__('Sorry, you are accessing wrong information'));
             return $response;
+=======
+        // Log the callback response
+        $this->helper->addLogs($this->amwal->getConfigData("debug"), AMWAL_DEBUG_FILE, 'Callback Response: ', print_r($integrityParameters, 1));
+        // Validate secure hash
+        if (($params['responseCode'] === '00' && $secureHashValue == $params['secureHashValue'])) {
+            $isPaymentApproved = true;
+>>>>>>> c5b80109967affd71a1cab6a7e6cc7a5502d2bfc
         }
         $info = "<br/> Transaction ID: " . AmwalPay::sanitizeVar('transactionId') . "<br/> Transaction Msg: <b style='color:DodgerBlue;'>" . $params['message'] . "</b>";
 
