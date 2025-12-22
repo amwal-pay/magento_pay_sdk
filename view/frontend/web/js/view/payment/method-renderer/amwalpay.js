@@ -69,11 +69,7 @@ define(
             },
             callSmartBox: function (data) {
                 var callback = window.checkoutConfig.payment[this.getCode()].callback;
-<<<<<<< HEAD
                 var payment_view = window.checkoutConfig.payment[this.getCode()].payment_view;
-=======
-                var base_url = window.checkoutConfig.payment[this.getCode()].base_url;
->>>>>>> c5b80109967affd71a1cab6a7e6cc7a5502d2bfc
                 SmartBox.Checkout.configure = {
                     ...data,
 
@@ -88,7 +84,6 @@ define(
                     },
 
                     cancelCallback: function () {
-<<<<<<< HEAD
                         fullScreenLoader.startLoader();
                         $.ajax({
                             url: url.build('amwal/checkout/restorequote'),
@@ -102,9 +97,6 @@ define(
                                 window.location = url.build('checkout/cart');
                             }
                         });
-=======
-                       window.location = base_url;
->>>>>>> c5b80109967affd71a1cab6a7e6cc7a5502d2bfc
                     },
                 };
                 if (payment_view === '3') {
