@@ -43,6 +43,10 @@
                     <label>Show Product Details on Amwal's Checkout</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                 <field id="has_apple_pay" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="90" translate="label" type="select">
+                    <label>Show Apple Pay Button on Checkout</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
                 <field id="apple_cert" translate="label" type="textarea" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Apple Pay Certificate</label>
                     <backend_model>Amwal\Pay\Model\Config\Backend\AppleCert</backend_model>
