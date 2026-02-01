@@ -41,9 +41,10 @@ define([
          * =============================== */
         isActive: function () {
             const cfg = window.checkoutConfig.payment.amwal_pay || {};
-            return !!(cfg.active && cfg.has_apple_pay && window.ApplePaySession);
-            // return true;
 
+            return cfg.active === "1" &&
+                cfg.has_apple_pay === "1" &&
+                typeof window.ApplePaySession !== "undefined";
         },
 
         getCustomerEmail: function () {
