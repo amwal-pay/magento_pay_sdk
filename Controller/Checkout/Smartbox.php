@@ -249,7 +249,7 @@ class Smartbox extends \Magento\Framework\App\Action\Action implements CsrfAware
             $unitPrice = round($unitPrice, 3);
 
             $items[] = [
-                'Name' => mb_strimwidth($item->getName(), 0, 45, '...'),
+                'Name' => self::amwalpay_sanitize_string($item->getName()),
                 'DescriptionTwo' => 'Quantity: ' . $qty,
                 'Price' => 'OMR ' . $unitPrice,
             ];
@@ -327,5 +327,10 @@ class Smartbox extends \Magento\Framework\App\Action\Action implements CsrfAware
         }
 
         return $items;
+    }
+    public static function amwalpay_sanitize_string($string)
+    {
+        $string = preg_replace('/[^\p{L}\p{N}\s]/u', '', $string);
+        return $string ?: 'Item';
     }
 }

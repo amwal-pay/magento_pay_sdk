@@ -42,9 +42,11 @@ class ConfigProvider implements ConfigProviderInterface
             return [
                 'payment' => [
                     AmwalPay::CODE => [
+                        'active' => $this->getConfigData(AmwalPay::CODE, 'active'),
                         'environment' => $this->getConfigData(AmwalPay::CODE, 'environment'),
                         'callback' => $this->storeManager->getStore()->getBaseUrl() . 'amwal/checkout/callback',
                         'payment_view' => $this->getConfigData(AmwalPay::CODE, 'payment_view'),
+                        'has_apple_pay' => $this->getConfigData(AmwalPay::CODE, 'has_apple_pay'),
                     ],
                 ],
             ];
