@@ -51,6 +51,15 @@
                     <label>Apple Pay Certificate</label>
                     <backend_model>Amwal\Pay\Model\Config\Backend\AppleCert</backend_model>
                 </field>
+                <field id="checkout_color" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Checkout Theme Color</label>
+                    <frontend_model>Amwal\Pay\Block\Adminhtml\System\Config\Color</frontend_model>
+                </field>
+                 <field id="ignore_receipt" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="90" translate="label" type="select">
+                    <label>Ignore Receipt</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>If it is yes, it will show simplified success only; otherwise, it will display the full receipt.</comment>
+                </field>
                 <field id="complete_paid_order" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="90" translate="label" type="select">
                     <label>Complete Order After Payment</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>

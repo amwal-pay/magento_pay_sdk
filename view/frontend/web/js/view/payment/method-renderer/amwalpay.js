@@ -99,6 +99,7 @@ define(
                         });
                     },
                 };
+                SmartBox.Checkout.configure.SmartBoxColorConfig = { PrimaryColor: data.PrimaryColor };
                 if (payment_view === '3') {
                     window.location.href = SmartBox.Checkout.getSmartBoxUrl();
                 } else {

@@ -124,6 +124,8 @@ class Smartbox extends \Magento\Framework\App\Action\Action implements CsrfAware
                 $has_items = $this->amwal->getConfigData('has_items');
                 $amount = $order->getBaseTotalDue();
                 $merchantReference = $order->getIncrementId() . '_' . date("ymds");
+                $checkout_color = $this->amwal->getConfigData('checkout_color');
+                $ignore_receipt = $this->amwal->getConfigData('ignore_receipt');
                 if ($order->getCustomerId()) {
                     // echo "<pre>";print_r($this->getUserTokens($order->getCustomerId()));exit;
                     $sessionToken = $this->getUserTokens($order->getCustomerId());
@@ -162,7 +164,9 @@ class Smartbox extends \Magento\Framework\App\Action\Action implements CsrfAware
                     'SessionToken' => $sessionToken,
                     'ReturnUrl' => $returnUrl,
                     'CancelUrl' => $cancelUrl,
-                    'ContactInfoType' => isset($contact_info_type) ? $contact_info_type : '1'
+                    'ContactInfoType' => isset($contact_info_type) ? $contact_info_type : '1',
+                    'PrimaryColor' => $checkout_color ? $checkout_color : '#7f22ff',
+                    'IgnoreReceipt' => $ignore_receipt ? 'true' : 'false'
                 ];
                 if ($has_items) {
                     $data['OrderItems'] = $this->getInvoiceItems($order);
