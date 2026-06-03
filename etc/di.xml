@@ -1,12 +1,20 @@
 <?xml version="1.0"?>
 
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <type name="\Magento\Sales\Model\Order\Email\Sender\OrderSender">
-        <plugin name="Amwal_Pay-OrderSender-Plugin" type="Amwal\Pay\Plugin\OrderEmailPlugin"/>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <!-- Order Email Plugin -->
+    <type name="Magento\Sales\Model\Order\Email\Sender\OrderSender">
+        <plugin name="Amwal_Pay-OrderSender-Plugin"
+                type="Amwal\Pay\Plugin\OrderEmailPlugin"/>
     </type>
-     <type name="Amwal\Pay\Helper\AmwalPay">
+
+    <!-- Helper Arguments -->
+    <type name="Amwal\Pay\Helper\AmwalPay">
         <arguments>
-            <argument name="helper" xsi:type="object">Magento\Framework\App\Helper\AbstractHelper</argument>
+            <argument name="helper" xsi:type="object">
+                Magento\Framework\App\Helper\AbstractHelper
+            </argument>
         </arguments>
     </type>
 </config>
