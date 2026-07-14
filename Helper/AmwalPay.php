@@ -3,10 +3,30 @@
 namespace Amwal\Pay\Helper;
 
 use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Framework\App\Helper\Context;
+use Magento\Framework\App\RequestInterface;
 
 class AmwalPay extends AbstractHelper
 {
-    public static function HttpRequest($apiPath, $data = array())
+    /**
+     * @var RequestInterface
+     */
+    protected $request;
+
+    /**
+     * Constructor
+     *
+     * @param Context $context
+     * @param RequestInterface $request
+     */
+    public function __construct(
+        Context $context,
+        RequestInterface $request
+    ) {
+        parent::__construct($context);
+        $this->request = $request;
+    }
+    public function HttpRequest($apiPath, $data = array())
     {
         try {
             $payload = json_encode($data);
@@ -15,7 +35,7 @@ class AmwalPay extends AbstractHelper
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                 'Content-Type: application/json',
-                'User-Agent: ' . self::sanitizeVar('HTTP_USER_AGENT', 'SERVER')
+                'User-Agent: ' . $this->sanitizeVar('HTTP_USER_AGENT', 'SERVER')
             ));
             curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
             curl_setopt($ch, CURLOPT_TIMEOUT, 15);
@@ -39,9 +59,9 @@ class AmwalPay extends AbstractHelper
         if ($env == "prod") {
             return 'https://webhook.amwalpg.com/';
         } else if ($env == "uat") {
-            return  'https://test.amwalpg.com:14443/';
+            return 'https://test.amwalpg.com:14443/';
         } else if ($env == "sit") {
-            return  'https://test.amwalpg.com:24443/';
+            return 'https://test.amwalpg.com:24443/';
         }
     }
     /**
@@ -93,15 +113,28 @@ class AmwalPay extends AbstractHelper
         $sign = self::encryptWithSHA256($string, $hmacKey);
         return strtoupper($sign);
     }
-    public static function sanitizeVar($name, $global = 'GET')
+    public function sanitizeVar($name, $global = 'GET')
     {
-        if (isset($GLOBALS['_' . $global][$name])) {
-            if (is_array($GLOBALS['_' . $global][$name])) {
-                return $GLOBALS['_' . $global][$name];
-            }
-            return htmlspecialchars($GLOBALS['_' . $global][$name], ENT_QUOTES);
+        switch (strtoupper($global)) {
+            case 'POST':
+                $value = $this->request->getPostValue($name);
+                break;
+
+            case 'GET':
+            default:
+                $value = $this->request->getParam($name);
+                break;
         }
-        return null;
+
+        if ($value === null) {
+            return null;
+        }
+
+        if (is_array($value)) {
+            return $value;
+        }
+
+        return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
     }
     /**
      * Adds logs to a specified file.

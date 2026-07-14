@@ -1,6 +1,6 @@
 {
     "name": "amwalpay/magento2-payment",
-    "version": "1.0.1",
+    "version": "1.0.4",
     "description": "AmwalPay payment for for Magento2 e-commerce.",
     "keywords": [
         "amwal",
