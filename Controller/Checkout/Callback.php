@@ -99,10 +99,11 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
      * @return \Magento\Framework\Controller\Result\Redirect
      */
     public function execute()
-    {
-        if ($this->helper->sanitizeVar('REQUEST_METHOD', 'SERVER') === 'POST') {
+    {   
+    
+        if ($this->getRequest()->getMethod() === 'POST') {
             $this->callCloudNotification();
-        } else if ($this->helper->sanitizeVar('REQUEST_METHOD', 'SERVER') === 'GET' && !empty($this->getRequest()->getParams())) {
+        } else if ($this->getRequest()->getMethod() === 'GET' && !empty($this->getRequest()->getParams())) {
             return $this->callBack();
         } else {
             $this->redirectWithError("This Server is not ready to handle your request right now.");
@@ -154,7 +155,7 @@ class Callback extends \Magento\Framework\App\Action\Action implements CsrfAware
             $this->redirectWithError(__('Sorry, you are accessing wrong information'));
             return $response;
         }
-        $info = "<br/> Transaction ID: " . AmwalPay::sanitizeVar('transactionId') . "<br/> Transaction Msg: <b style='color:DodgerBlue;'>" . $params['message'] . "</b>";
+        $info = "<br/> Transaction ID: " . $this->helper->sanitizeVar('transactionId') . "<br/> Transaction Msg: <b style='color:DodgerBlue;'>" . $params['message'] . "</b>";
 
         // Handle payment approval or failure
         if ($params['responseCode'] === '00') {

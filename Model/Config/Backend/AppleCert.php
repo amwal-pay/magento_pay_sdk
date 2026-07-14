@@ -19,7 +19,7 @@ class AppleCert extends Value
      */
     protected $logger;
     protected $helper;
-     protected $scopeConfig;
+    protected $scopeConfig;
     public function __construct(
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
@@ -27,12 +27,21 @@ class AppleCert extends Value
         \Magento\Framework\App\Cache\TypeListInterface $cacheTypeList,
         File $fileIo,
         LoggerInterface $logger,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         AmwalPay $helper,
+        ?\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        ?\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
-        parent::__construct($context, $registry, $scopeConfig, $cacheTypeList, $resource, $resourceCollection, $data);
+        parent::__construct(
+            $context,
+            $registry,
+            $scopeConfig,
+            $cacheTypeList,
+            $resource,
+            $resourceCollection,
+            $data
+        );
+
         $this->fileIo = $fileIo;
         $this->logger = $logger;
         $this->helper = $helper;
@@ -42,7 +51,7 @@ class AppleCert extends Value
     public function afterSave()
     {
         try {
-            $debug= $this->scopeConfig->getValue('payment/amwal_pay/debug', ScopeInterface::SCOPE_STORE);
+            $debug = $this->scopeConfig->getValue('payment/amwal_pay/debug', ScopeInterface::SCOPE_STORE);
             $appleCertContent = trim($this->getValue());
             $rootPath = BP . DIRECTORY_SEPARATOR; // Magento root path
             $wellKnownPath = $rootPath . '.well-known' . DIRECTORY_SEPARATOR;
@@ -57,15 +66,15 @@ class AppleCert extends Value
                 // Remove file if no content
                 if ($this->fileIo->fileExists($appleFile)) {
                     $this->fileIo->rm($appleFile);
-                    $this->helper->addLogs($debug,AMWAL_DEBUG_FILE ,'[AmwalPay] Apple association file removed.');
+                    $this->helper->addLogs($debug, AMWAL_DEBUG_FILE, '[AmwalPay] Apple association file removed.');
                 }
             } else {
                 // Always write the file (even if content is same)
                 $this->fileIo->write($appleFile, $appleCertContent, 0664);
-                $this->helper->addLogs($debug,AMWAL_DEBUG_FILE, "[AmwalPay] Apple association file written to: $appleFile");
+                $this->helper->addLogs($debug, AMWAL_DEBUG_FILE, "[AmwalPay] Apple association file written to: $appleFile");
             }
         } catch (\Exception $e) {
-            $this->helper->addLogs($debug,AMWAL_DEBUG_FILE, '[AmwalPay] Error writing Apple association file: ' . $e->getMessage());
+            $this->helper->addLogs($debug, AMWAL_DEBUG_FILE, '[AmwalPay] Error writing Apple association file: ' . $e->getMessage());
             throw new LocalizedException(__('Cannot write Apple association file. Check permissions.'));
         }
 
